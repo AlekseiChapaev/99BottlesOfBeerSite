@@ -7,12 +7,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.sql.DriverManager.getDriver;
+import java.util.*;
 
 public class TestSite {
 
@@ -76,13 +71,13 @@ public class TestSite {
         driver.findElement(By.xpath(getLinkName("M"))).click();
         driver.findElement(By.xpath("//a[. = 'Mathematica']")).click();
 
-        Map<String, String> expectedResult = new HashMap();
+        Map<String, String> expectedResult = new HashMap<>();
         expectedResult.put("Comments", "1");
         expectedResult.put("Date", "03/16/06");
         expectedResult.put("Author", "Brenton Bostick");
 
         List<WebElement> tDs = driver.findElements(By.xpath("//div[@id = 'main']/table/tbody/tr/td"));
-        Map<String, String> actualResult = new HashMap();
+        Map<String, String> actualResult = new LinkedHashMap<>();
         for (int i = 0; i < tDs.size() - 1; i += 2) {
             actualResult.put(tDs.get(i).getText(), tDs.get(i + 1).getText());
         }
@@ -90,5 +85,22 @@ public class TestSite {
         Assert.assertEquals(actualResult.get("Author:"), expectedResult.get("Author"));
         Assert.assertEquals(actualResult.get("Date:"), expectedResult.get("Date"));
         Assert.assertEquals(actualResult.get("Comments:"), expectedResult.get("Comments"));
+    }
+
+    @Test
+    public void testCheckNumbersLanguages_TC_12_05() {
+        driver.get(URL);
+        driver.findElement(By.xpath(URL_BROWSE_LANGUAGE_BUTTON)).click();
+        driver.findElement(By.xpath(getLinkName("0"))).click();
+        List<WebElement> tDs = driver.findElements(By.cssSelector("#category tbody tr"));
+
+        int count = 0;
+        for(WebElement w : tDs){
+            if(w.getText().charAt(0) >= '0' && w.getText().charAt(0) <= '9' ){
+                count++;
+            }
+        }
+
+        Assert.assertEquals(count, 10);
     }
 }
