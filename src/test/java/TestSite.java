@@ -7,7 +7,10 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.sql.DriverManager.getDriver;
 
 public class TestSite{
 
@@ -50,5 +53,17 @@ public class TestSite{
         String[] result = languages.get(languages.size() - 1).getText().split(" ");
 
         Assert.assertEquals(result[0], "MySQL");
+    }
+
+    @Test
+    public void testCheckHeaders_TC_12_03(){
+        driver.get(URL);
+        driver.findElement(By.xpath(URL_BROWSE_LANGUAGE_BUTTON)).click();
+        List<WebElement> headers = driver.findElements(By.cssSelector("#category tbody tr th"));
+        String[] expectedResult = new String[]{"Language", "Author", "Date", "Comments", "Rate"};
+
+        for(int i = 0; i < headers.size(); i++){
+            Assert.assertEquals(headers.get(i).getText(), expectedResult[i]);
+        }
     }
 }
